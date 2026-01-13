@@ -7,7 +7,7 @@
 # ███████╗ ██║      ██║  ██╗██║   ██║   
 # ╚══════╝ ╚═╝      ╚═╝  ╚═╝╚═╝   ╚═╝   
 #      L-KIT: THE DEFINITIVE EDITION
-#           BY LUMACRAFT8
+#           BY SrxMateo & SonicTheGames
 # ======================================================
 
 # --- COLORES & ESTÉTICA ---
