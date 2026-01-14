@@ -2,97 +2,75 @@
 # =========================================
 # ██╗      ██╗   ██╗███╗   ███╗ █████╗  ██████╗██████╗  █████╗ ███████╗████████╗
 # ██║      ██║   ██║████╗ ████║██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔════╝╚══██╔══╝
-# ██║      ██║   ██║██╔████╔██║███████║██║     ██████╔╝███████║█████╗     ██║   
-# ██║      ██║   ██║██║╚██╔╝██║██╔══██║██║     ██╔══██╗██╔══██║██╔══╝     ██║   
-# ███████╗ ╚██████╔╝██║ ╚═╝ ██║██║  ██║╚██████╗██║  ██║██║  ██║██║        ██║   
-# ╚══════╝  ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝        ╚═╝   
-#
-#            • By SrxMateo • (Optimized)
+# ██║      ██║   ██║██╔████╔██║███████║██║     ██████╔╝███████║█████╗      ██║   
+# ██║      ██║   ██║██║╚██╔╝██║██╔══██║██║     ██╔══██╗██╔══██║██╔══╝      ██║   
+# ███████╗╚██████╔╝██║ ╚═╝ ██║██║  ██║╚██████╗██║  ██║██║  ██║██║        ██║   
+# ╚══════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝        ╚═╝   
+#             • by SrxMateo (Velocity) • Sonic •
 # =========================================
 
-# --- CONFIGURACIÓN ---
+# --- CONFIGURACIÓN AUTOMÁTICA ---
+# L-KIT descarga todo como server.jar. NO CAMBIES ESTO si usas el instalador.
 SERVER_JAR="server.jar"
-MEM_MIN="1G"
-MEM_MAX="3G"
 
-# JVM flags optimizados (Aikar's Flags v2 - Ajustados)
-JVM_OPTS="-XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 \
--XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch \
--XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M \
--XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 \
--XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 \
--XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 \
--XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 \
--Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true"
+# Velocity consume muy poco. 1GB es el estándar perfecto.
+MEM_MIN="512M"
+MEM_MAX="1024M"
+
+# --- FLags OFICIALES PARA VELOCITY ---
+# Velocity no necesita Aikar's Flags complejos. Necesita G1GC simple.
+JVM_OPTS="-XX:+UseG1GC -XX:G1HeapRegionSize=4M -XX:+UnlockExperimentalVMOptions -XX:+ParallelRefProcEnabled -XX:+AlwaysPreTouch -XX:MaxGCPauseMillis=100"
 
 # Colores
-GREEN="\033[1;32m"
-RED="\033[1;31m"
-YELLOW="\033[1;33m"
-CYAN="\033[1;36m"
-WHITE="\033[1;37m"
-RESET="\033[0m"
+MAGENTA="\033[1;35m"; CYAN="\033[1;36m"; WHITE="\033[1;37m"
+GREEN="\033[1;32m"; YELLOW="\033[1;33m"; RED="\033[1;31m"; RESET="\033[0m"
 
-# 1. Detección Inteligente de Java
-# Primero busca en el sistema, si no, busca rutas comunes.
-if command -v java >/dev/null 2>&1; then
-    JAVA_PATH=$(command -v java)
-elif [ -f "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java" ]; then
-    JAVA_PATH="/usr/lib/jvm/temurin-21-jdk-amd64/bin/java"
-elif [ -f "$PREFIX/bin/java" ]; then
-    # Soporte para Termux
-    JAVA_PATH="$PREFIX/bin/java"
+# --- DETECCIÓN DE JAVA INTELIGENTE ---
+# Velocity requiere Java 17 o 21. Java 8 NO FUNCIONA.
+if [ -f "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java" ]; then
+    JAVA_CMD="/usr/lib/jvm/temurin-21-jdk-amd64/bin/java"
+elif [ -f "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java" ]; then
+    JAVA_CMD="/usr/lib/jvm/temurin-17-jdk-amd64/bin/java"
 else
-    echo -e "${RED}❌ ERROR CRÍTICO: No se encontró Java instalado.${RESET}"
-    echo -e "${YELLOW}Instálalo con: pkg install openjdk-17 (Termux) o apt install openjdk-17-jre (Linux)${RESET}"
-    exit 1
+    JAVA_CMD="java"
 fi
 
-# 2. Verificación de Archivos
+# Comprobar si existe el archivo .jar
 if [ ! -f "$SERVER_JAR" ]; then
-    echo -e "${RED}❌ Archivo $SERVER_JAR no encontrado en esta carpeta.${RESET}"
-    echo -e "${YELLOW}Asegúrate de que el nombre del archivo coincida en la configuración.${RESET}"
+    echo -e "${RED}❌ ERROR CRÍTICO: No se encuentra el archivo $SERVER_JAR${RESET}"
+    echo -e "${YELLOW}💡 Solución: Asegúrate de que descargaste el jar y se llama 'server.jar'.${RESET}"
+    echo -e "Archivos actuales en la carpeta:"
+    ls
     exit 1
 fi
 
-if [ ! -f eula.txt ]; then
-    echo "eula=true" > eula.txt
-    echo -e "${GREEN}✅ Archivo eula.txt creado automáticamente.${RESET}"
-fi
-
-# --- BUCLE DE EJECUCIÓN ---
+# --- BUCLE DE EJECUCIÓN (ANTI-CRASH) ---
 while true; do
     clear
-    echo -e "${CYAN}"
+    echo -e "${MAGENTA}"
     echo " ██╗      ██╗   ██╗███╗   ███╗ █████╗  ██████╗██████╗  █████╗ ███████╗████████╗"
     echo " ██║      ██║   ██║████╗ ████║██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔════╝╚══██╔══╝"
-    echo " ██║      ██║   ██║██╔████╔██║███████║██║     ██████╔╝███████║█████╗     ██║   "
-    echo " ██║      ██║   ██║██║╚██╔╝██║██╔══██║██║     ██╔══██╗██╔══██║██╔══╝     ██║   "
-    echo " ███████╗ ╚██████╔╝██║ ╚═╝ ██║██║  ██║╚██████╗██║  ██║██║  ██║██║        ██║   "
-    echo " ╚══════╝  ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝        ╚═╝   "
-    echo -e "             ${WHITE}• By SrxMateo •${RESET}"
+    echo " ██║      ██║   ██║██╔████╔██║███████║██║     ██████╔╝███████║█████╗      ██║   "
+    echo " ██║      ██║   ██║██║╚██╔╝██║██╔══██║██║     ██╔══██╗██╔══██║██╔══╝      ██║   "
+    echo " ███████╗╚██████╔╝██║ ╚═╝ ██║██║  ██║╚██████╗██║  ██║██║  ██║██║        ██║   "
+    echo " ╚══════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝        ╚═╝   "
+    echo -e "             ${WHITE}• PROXY OPTIMIZER • SrxMateo EDITION •${RESET}"
     echo ""
-    echo -e "      ${GREEN}🚀 INICIANDO LUMACRAFT 🚀${RESET}"
-    echo -e "      ${WHITE}Java:${RESET} ${YELLOW}$JAVA_PATH${RESET} | ${WHITE}RAM:${RESET} ${YELLOW}$MEM_MAX${RESET}"
-    echo -e "${CYAN} ==========================================================================${RESET}"
+    echo -e "      ${CYAN}🌐 INICIANDO VELOCITY PROXY${RESET}"
+    echo -e "      ${WHITE}Java:${RESET} ${GREEN}$($JAVA_CMD -version 2>&1 | head -n 1 | awk -F '"' '{print $2}')${RESET} | ${WHITE}RAM:${RESET} ${MAGENTA}$MEM_MAX${RESET}"
+    echo -e "${MAGENTA} ==========================================================================${RESET}"
     echo ""
 
-    # Ejecución del Servidor
-    # NOTA: Se eliminó "| tee" para permitir escribir comandos en la consola
-    "$JAVA_PATH" -Xms$MEM_MIN -Xmx$MEM_MAX $JVM_OPTS -jar "$SERVER_JAR" nogui
+    # Ejecutar el servidor
+    $JAVA_CMD -Xms$MEM_MIN -Xmx$MEM_MAX $JVM_OPTS -jar $SERVER_JAR
 
-    # Código de salida
-    EXIT_CODE=$?
+    # Si el servidor se cierra
+    echo -e "\n${RED}⚠️  EL PROXY SE HA DETENIDO.${RESET}"
+    echo -e "${WHITE}Presiona ${YELLOW}CTRL + C${WHITE} ahora para detener el reinicio.${RESET}"
+    echo -e "${WHITE}Reiniciando en:${RESET}"
     
-    echo ""
-    echo -e "${RED}🛑 El servidor se ha detenido (Código: $EXIT_CODE).${RESET}"
-    echo -e "${WHITE}⏳ Reiniciando en 5 segundos... ${RED}(Presiona CTRL+C para cancelar)${RESET}"
-    
-    # Cuenta regresiva con opción de cancelar
-    for i in 5 4 3 2 1; do
-        echo -n -e "${YELLOW}$i... ${RESET}"
+    for i in 3 2 1; do
+        echo -ne "${YELLOW}$i... ${RESET}"
         sleep 1
     done
-    
-    echo -e "\n${GREEN}🔄 Reiniciando ahora...${RESET}"
 done
