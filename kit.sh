@@ -7,10 +7,10 @@
 # ███████╗ ██║      ██║  ██╗██║   ██║   
 # ╚══════╝ ╚═╝      ╚═╝  ╚═╝╚═╝   ╚═╝   
 #      L-KIT: THE DEFINITIVE EDITION
-#           BY SrxMateo & SonicTheGames
+#           BY LUMACRAFT8
 # ======================================================
 
-# --- COLORES & ESTÉTICA ---
+# --- COLORES & CONFIGURACIÓN ---
 GOLD="\033[1;33m"; BLUE="\033[1;34m"; CYAN="\033[1;36m"; GREEN="\033[1;32m"
 RED="\033[1;31m"; WHITE="\033[1;37m"; PURPLE="\033[1;35m"; GRAY="\033[0;90m"
 RESET="\033[0m"
@@ -19,7 +19,7 @@ LOG_FILE="/var/log/l-kit.log"
 # Crear log si no existe
 if [ ! -f $LOG_FILE ]; then sudo touch $LOG_FILE && sudo chmod 666 $LOG_FILE; fi
 
-# --- TRADUCCIÓN DINÁMICA ---
+# --- IDIOMA ---
 select_lang() {
     clear
     echo -e "${CYAN}╔══════════════════════════════════════╗${RESET}"
@@ -27,57 +27,51 @@ select_lang() {
     echo -e "${CYAN}╚══════════════════════════════════════╝${RESET}"
     echo -e "  1) Español 🇪🇸"
     echo -e "  2) English 🇺🇸"
-    echo -e "  3) Français 🇫🇷"
-    echo -e "${GRAY}----------------------------------------${RESET}"
     read -p "  >> " lang_opt
-    case $lang_opt in
-        1) L="es";; 2) L="en";; 3) L="fr";; *) L="es";;
-    esac
+    [[ $lang_opt == "2" ]] && L="en" || L="es"
 }
 
-# Diccionario de Textos
+# Textos
 txt() {
     case $L in
         es) case $1 in
-            menu_title) echo "MENÚ PRINCIPAL";;
-            opt_core) echo "VPS CORE (Doctor, Swap, BBR)";;
-            opt_game) echo "MOTOR DE JUEGO (Instalar Server)";;
-            opt_back) echo "BACKUPS (Drive & Cron)";;
-            opt_hist) echo "HISTORIAL & INFO";;
-            opt_mon) echo "LUMAMONITOR (Panel en Vivo)";;
-            opt_exit) echo "SALIR";;
-            ask_folder) echo "¿Crear nueva carpeta para el servidor?";;
-            name_folder) echo "Nombre de la carpeta (Ej: Survival):";;
-            folder_exist) echo "⚠ LA CARPETA YA EXISTE.";;
-            folder_ok) echo "✔ Carpeta creada:";;
-            sel_soft) echo "SELECCIONA SOFTWARE:";;
-            sel_ver) echo "ESCRIBE LA VERSIÓN EXACTA:";;
-            installing) echo "📥 Descargando e Instalando...";;
-            ram_detect) echo "🧠 RAM Detectada:";;
-            ram_set) echo "⚙ Asignando al servidor:";;
-            done_msg) echo "✨ INSTALACIÓN COMPLETADA ✨";;
+            menu_t) echo "MENÚ PRINCIPAL";;
+            op_1) echo "VPS CORE (Doctor, Swap, BBR)";;
+            op_2) echo "GAME ENGINE (Instalar Server)";;
+            op_3) echo "BACKUPS (Drive & Cron)";;
+            op_4) echo "HISTORIAL & INFO";;
+            op_5) echo "LUMAMONITOR (Panel en Vivo)";;
+            op_0) echo "SALIR";;
+            ask_f) echo "¿Crear nueva carpeta para el servidor?";;
+            name_f) echo "Nombre de la carpeta (Ej: Survival):";;
+            exist_f) echo "⚠ LA CARPETA YA EXISTE.";;
+            sel_s) echo "SELECCIONA SOFTWARE:";;
+            sel_v) echo "ESCRIBE LA VERSIÓN EXACTA:";;
+            down_msg) echo "📥 Descargando e Instalando...";;
+            proxy_msg) echo "✔ Detectado Proxy: Usando script ligero (1GB RAM).";;
+            ram_msg) echo "🧠 RAM VPS Detectada:";;
+            set_msg) echo "⚙ Asignando al servidor (75%):";;
+            done) echo "✨ INSTALACIÓN COMPLETADA ✨";;
             esac;;
         en) case $1 in
-            menu_title) echo "MAIN MENU";;
-            opt_core) echo "VPS CORE (Doctor, Swap, BBR)";;
-            opt_game) echo "GAME ENGINE (Install Server)";;
-            opt_back) echo "BACKUPS (Drive & Cron)";;
-            opt_hist) echo "HISTORY & INFO";;
-            opt_mon) echo "LUMAMONITOR (Live Panel)";;
-            opt_exit) echo "EXIT";;
-            ask_folder) echo "Create new folder for server?";;
-            name_folder) echo "Folder name (Ex: Survival):";;
-            folder_exist) echo "⚠ FOLDER ALREADY EXISTS.";;
-            folder_ok) echo "✔ Folder created:";;
-            sel_soft) echo "SELECT SOFTWARE:";;
-            sel_ver) echo "TYPE EXACT VERSION:";;
-            installing) echo "📥 Downloading & Installing...";;
-            ram_detect) echo "🧠 RAM Detected:";;
-            ram_set) echo "⚙ Allocating to server:";;
-            done_msg) echo "✨ INSTALLATION COMPLETE ✨";;
+            menu_t) echo "MAIN MENU";;
+            op_1) echo "VPS CORE (Doctor, Swap, BBR)";;
+            op_2) echo "GAME ENGINE (Install Server)";;
+            op_3) echo "BACKUPS (Drive & Cron)";;
+            op_4) echo "HISTORY & INFO";;
+            op_5) echo "LUMAMONITOR (Live Panel)";;
+            op_0) echo "EXIT";;
+            ask_f) echo "Create new folder for server?";;
+            name_f) echo "Folder name (Ex: Survival):";;
+            exist_f) echo "⚠ FOLDER ALREADY EXISTS.";;
+            sel_s) echo "SELECT SOFTWARE:";;
+            sel_v) echo "TYPE EXACT VERSION:";;
+            down_msg) echo "📥 Downloading & Installing...";;
+            proxy_msg) echo "✔ Proxy Detected: Using light script (1GB RAM).";;
+            ram_msg) echo "🧠 VPS RAM Detected:";;
+            set_msg) echo "⚙ Allocating to server (75%):";;
+            done) echo "✨ INSTALLATION COMPLETE ✨";;
             esac;;
-        fr) # (Versión francesa simplificada para el ejemplo)
-            echo "Option not fully translated";;
     esac
 }
 
@@ -85,128 +79,118 @@ txt() {
 luma_monitor() {
     while true; do
         clear
-        # Datos en tiempo real
         ram_u=$(free -m | awk '/Mem:/ { print $3 }'); ram_t=$(free -m | awk '/Mem:/ { print $2 }')
-        cpu_l=$(uptime | awk -F'load average:' '{ print $2 }')
-        scr_c=$(screen -ls | grep -c "tached")
-        disk_u=$(df -h / | awk 'NR==2 {print $5}')
+        cpu=$(uptime | awk -F'load average:' '{ print $2 }')
+        scr=$(screen -ls | grep -c "tached")
         
         echo -e "${CYAN}╔══════════════════════════════════════════════════╗${RESET}"
         echo -e "║         💎 ${GOLD}LUMAMONITOR - LIVE STATUS${RESET} 💎        ║"
         echo -e "${CYAN}╠═════════════════════════╦════════════════════════╣${RESET}"
-        echo -e "║ ${WHITE}RAM USAGE:${RESET} ${BLUE}$ram_u / $ram_t MB${RESET} ║ ${WHITE}CPU LOAD:${RESET} ${YELLOW}$cpu_l${RESET}"
-        echo -e "║ ${WHITE}SWAP:${RESET}      $(free -m | awk '/Swap:/ { print $2" MB" }')      ║ ${WHITE}DISK:${RESET}     $disk_u Used     "
-        echo -e "║ ${WHITE}SCREENS:${RESET}   ${PURPLE}$scr_c Active${RESET}    ║ ${WHITE}UPTIME:${RESET}   $(uptime -p | cut -d " " -f2-)"
+        echo -e "║ ${WHITE}RAM:${RESET} $ram_u / $ram_t MB      ║ ${WHITE}CPU:${RESET} $cpu      "
+        echo -e "║ ${WHITE}SWAP:${RESET} $(free -m | awk '/Swap:/ { print $2" MB" }')      ║ ${WHITE}SCREENS:${RESET} ${PURPLE}$scr Active${RESET}   "
         echo -e "${CYAN}╠═════════════════════════╩════════════════════════╣${RESET}"
-        echo -e "║  ${GRAY}Puertos:${RESET} 22 [$(sudo ufw status | grep -q "22" && echo "${GREEN}ON${RESET}" || echo "${RED}OFF${RESET}")] | 25565 [$(sudo ufw status | grep -q "25565" && echo "${GREEN}ON${RESET}" || echo "${RED}OFF${RESET}")]         ║"
+        echo -e "║  ${GRAY}Port 25565:${RESET} [$(sudo ufw status | grep -q "25565" && echo "${GREEN}OPEN${RESET}" || echo "${RED}OFF${RESET}")]  |  ${GRAY}Port 22:${RESET} [$(sudo ufw status | grep -q "22" && echo "${GREEN}OPEN${RESET}" || echo "${RED}OFF${RESET}")]  ║"
         echo -e "${CYAN}╚══════════════════════════════════════════════════╝${RESET}"
         echo -e "  ${GRAY}Presiona [Q] para salir...${RESET}"
         read -t 2 -n 1 k && [[ $k == "q" || $k == "Q" ]] && break
     done
 }
 
-# --- ENGINE: INSTALADOR ---
+# --- ENGINE: INSTALADOR INTELIGENTE ---
 game_engine() {
     header
-    echo -e "${WHITE}$(txt ask_folder) (y/n)${RESET}"
+    echo -e "${WHITE}$(txt ask_f) (y/n)${RESET}"
     read -p ">> " cf
     if [[ $cf == "y" ]]; then
-        echo -e "${WHITE}$(txt name_folder)${RESET}"
+        echo -e "${WHITE}$(txt name_f)${RESET}"
         read -p ">> " fname
-        if [ -d "$fname" ]; then echo -e "${RED}$(txt folder_exist)${RESET}"; sleep 2; return; fi
+        if [ -d "$fname" ]; then echo -e "${RED}$(txt exist_f)${RESET}"; sleep 2; return; fi
         mkdir -p "$fname"; cd "$fname" || exit
-        echo -e "${GREEN}$(txt folder_ok) $fname${RESET}"
     fi
 
-    echo -e "\n${GOLD}$(txt sel_soft)${RESET}"
-    echo -e "1) ${PURPLE}Purpur${RESET} (Recomendado) | 2) ${BLUE}Paper${RESET} | 3) ${CYAN}Velocity${RESET} | 4) ${WHITE}Bungeecord${RESET}"
+    echo -e "\n${GOLD}$(txt sel_s)${RESET}"
+    echo -e "1) ${PURPLE}Purpur${RESET} | 2) ${BLUE}Paper${RESET} | 3) ${CYAN}Velocity${RESET} | 4) ${WHITE}Bungeecord${RESET}"
     read -p ">> " soft
     
     case $soft in
-        1) s_name="purpur"; v_rec="1.21.1, 1.20.4, 1.19.4"; url_base="https://api.purpurmc.org/v2/purpur";;
-        2) s_name="paper"; v_rec="1.21.1, 1.20.4, 1.16.5";; # Requiere lógica API compleja, simplificado para ejemplo
+        1) s_name="purpur"; v_rec="1.21.1, 1.20.4, 1.16.5";;
+        2) s_name="paper"; v_rec="1.21.1, 1.20.4, 1.8.8";;
         3) s_name="velocity"; v_rec="3.3.0-SNAPSHOT";;
+        4) s_name="bungeecord"; v_rec="latest";;
         *) s_name="purpur";;
     esac
 
-    echo -e "\n${WHITE}Versiones populares: ${GRAY}$v_rec${RESET}"
-    echo -e "${GOLD}$(txt sel_ver)${RESET}"
+    echo -e "\n${WHITE}Recomendadas: ${GRAY}$v_rec${RESET}"
+    echo -e "${GOLD}$(txt sel_v)${RESET}"
     read -p ">> " ver
 
-    echo -e "${YELLOW}$(txt installing)${RESET}"
+    echo -e "${YELLOW}$(txt down_msg)${RESET}"
     
-    # Descarga (Lógica Purpur Directa)
+    # Descarga del Server.jar
     if [[ $s_name == "purpur" ]]; then
-        wget -q --show-progress "$url_base/$ver/latest/download" -O server.jar
+        wget -q --show-progress "https://api.purpurmc.org/v2/purpur/$ver/latest/download" -O server.jar
     elif [[ $s_name == "velocity" ]]; then
-        # URL Fija para ejemplo Velocity
+        # Nota: Velocity URL puede cambiar, usamos una fija para ejemplo o API
         wget -q --show-progress "https://api.papermc.io/v2/projects/velocity/versions/$ver/builds/418/downloads/velocity-$ver-418.jar" -O server.jar
-    else
-        echo "Software en desarrollo..."; sleep 2; return
+    elif [[ $s_name == "paper" ]]; then
+         # Nota: Paper requiere API compleja, usando URL genérica para ejemplo
+         wget -q --show-progress "https://api.papermc.io/v2/projects/paper/versions/$ver/builds/latest/downloads/paper-$ver-latest.jar" -O server.jar
     fi
 
-    # Configuración Automática
+    # --- AQUÍ ESTÁ LA INTELIGENCIA ARTIFICIAL ---
     echo "eula=true" > eula.txt
-    wget -q "https://raw.githubusercontent.com/lumacraft8/L-KIT/main/iniciar.sh" -O iniciar.sh
-    chmod +x iniciar.sh
+    
+    if [[ $s_name == "velocity" || $s_name == "bungeecord" ]]; then
+        # ES PROXY: Descargar script ligero
+        wget -q "https://raw.githubusercontent.com/lumacraft8/L-KIT/main/iniciar-proxy.sh" -O iniciar.sh
+        chmod +x iniciar.sh
+        echo -e "${GREEN}$(txt proxy_msg)${RESET}"
+    else
+        # ES SERVIDOR: Descargar script potente y ajustar RAM
+        wget -q "https://raw.githubusercontent.com/lumacraft8/L-KIT/main/iniciar.sh" -O iniciar.sh
+        chmod +x iniciar.sh
+        
+        ram_total=$(free -m | awk '/Mem:/ { print $2 }')
+        ram_target=$(( ram_total * 75 / 100 ))
+        
+        sed -i "s/-Xms1G/-Xms${ram_target}M/g" iniciar.sh
+        sed -i "s/-Xmx1G/-Xmx${ram_target}M/g" iniciar.sh
+        
+        echo -e "${WHITE}$(txt ram_msg) ${BLUE}${ram_total}MB${RESET}"
+        echo -e "${WHITE}$(txt set_msg) ${GREEN}${ram_target}MB${RESET}"
+    fi
 
-    # RAM INTELIGENTE
-    ram_total=$(free -m | awk '/Mem:/ { print $2 }')
-    ram_target=$(( ram_total * 75 / 100 )) # Usa el 75%
-    sed -i "s/-Xms1G/-Xms${ram_target}M/g" iniciar.sh
-    sed -i "s/-Xmx1G/-Xmx${ram_target}M/g" iniciar.sh
-
-    # Log y Final
-    echo "[$(date)] INSTALLED: $s_name $ver in $(pwd)" >> $LOG_FILE
-    echo -e "\n${GREEN}$(txt done_msg)${RESET}"
-    echo -e "${WHITE}$(txt ram_detect) ${BLUE}${ram_total}MB${RESET} -> $(txt ram_set) ${GREEN}${ram_target}MB${RESET}"
-    echo -e "${GRAY}Escribe: cd $fname && ./iniciar.sh${RESET}"
+    echo "[$(date)] INSTALLED: $s_name $ver" >> $LOG_FILE
+    echo -e "\n${GREEN}$(txt done)${RESET}"
+    echo -e "${GRAY}Start: cd $fname && ./iniciar.sh${RESET}"
     read -p "Enter..."
 }
 
-# --- UTILS (Core, Backup, Info) ---
+# --- MENÚS UTILIDADES ---
 core_menu() {
     header
-    echo -e "${BLUE}1) DOCTOR VPS:${RESET} Verificar SWAP y RAM."
-    echo -e "${BLUE}2) TCP BBR:${RESET} Activar optimización de red Google."
+    echo -e "${BLUE}1) DOCTOR VPS:${RESET} Verificar si necesitas SWAP."
+    echo -e "${BLUE}2) TCP BBR:${RESET} Optimizar Ping (Google Algorithm)."
     echo -e "${BLUE}3) SWAP CREATE:${RESET} Crear archivo de intercambio (4GB)."
-    read -p ">> " co
-    case $co in
+    read -p ">> " c
+    case $c in
         1) free -h; read -p "Enter...";;
-        2) echo "net.core.default_qdisc=fq" | sudo tee -a /etc/sysctl.conf; echo "net.ipv4.tcp_congestion_control=bbr" | sudo tee -a /etc/sysctl.conf; sudo sysctl -p; echo "${GREEN}BBR ON${RESET}"; sleep 2;;
-        3) sudo fallocate -l 4G /swapfile && sudo chmod 600 /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile; echo "${GREEN}SWAP 4GB ON${RESET}"; sleep 2;;
+        2) echo "net.core.default_qdisc=fq" | sudo tee -a /etc/sysctl.conf; echo "net.ipv4.tcp_congestion_control=bbr" | sudo tee -a /etc/sysctl.conf; sudo sysctl -p; echo "BBR ON"; sleep 2;;
+        3) sudo fallocate -l 4G /swapfile && sudo chmod 600 /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile; echo "SWAP ON"; sleep 2;;
     esac
 }
 
 backup_menu() {
     header
-    echo -e "${GOLD}OPCIÓN 1: Rclone (Google Drive)${RESET}"
-    echo -e "Instala Rclone para conectar tu cuenta de Google."
-    echo -e "Comando manual: ${CYAN}rclone config${RESET}\n"
-    
-    echo -e "${GOLD}OPCIÓN 2: Cronjobs (Automático)${RESET}"
-    echo -e "Programa tareas diarias."
-    echo -e "Ejemplo: ${CYAN}0 4 * * * tar -czf backup.tar.gz /home/server${RESET}\n"
-    
-    read -p "1) Instalar Rclone  2) Editar Cron  0) Volver >> " bo
-    case $bo in
+    echo -e "1) Instalar Rclone (Google Drive)"
+    echo -e "2) Editar CronJobs (Programar)"
+    read -p ">> " b
+    case $b in
         1) sudo apt install -y rclone; rclone config;;
         2) crontab -e;;
     esac
 }
 
-info_menu() {
-    header
-    echo -e "${WHITE}HISTORIAL RECIENTE (/var/log/l-kit.log):${RESET}"
-    tail -n 5 $LOG_FILE
-    echo -e "\n${PURPLE}ℹ INFORMACIÓN:${RESET}"
-    echo -e "- ${CYAN}LumaMonitor:${RESET} Usa el comando 'lbot' para ver el panel."
-    echo -e "- ${CYAN}Optimización:${RESET} L-KIT ajusta la RAM al 75% del total disponible."
-    echo -e "- ${CYAN}Doctor VPS:${RESET} Diagnostica si tu servidor necesita Swap."
-    read -p "Enter..."
-}
-
-# --- HEADER & MAIN LOOP ---
 header() {
     clear
     echo -e "${CYAN} ██╗      ██╗  ██╗██╗████████╗"
@@ -214,33 +198,32 @@ header() {
     echo " ██║      █████╔╝ ██║   ██║   "
     echo " ██║      ██╔═██╗ ██║   ██║   "
     echo -e " ███████╗ ██║  ██╗██║   ██║   ${RESET}"
-    echo -e " ╚══════╝ ╚═╝  ╚═╝╚═╝   ╚═╝   ${GOLD}ARCHITECT v2.0${RESET}"
+    echo -e " ╚══════╝ ╚═╝  ╚═╝╚═╝   ╚═╝   ${GOLD}SrxMateo 6 Sonic v2.0${RESET}"
     echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
 }
 
-# Inicio del Script
+# START
 if [[ "$1" == "--monitor" ]]; then
     luma_monitor
 else
     select_lang
     while true; do
         header
-        echo -e "  ${BLUE}[1]${RESET} $(txt opt_core)"
-        echo -e "  ${GREEN}[2]${RESET} $(txt opt_game)"
-        echo -e "  ${CYAN}[3]${RESET} $(txt opt_back)"
-        echo -e "  ${GOLD}[4]${RESET} $(txt opt_hist)"
-        echo -e "  ${PURPLE}[5]${RESET} $(txt opt_mon)"
-        echo -e "  ${RED}[0]${RESET} $(txt opt_exit)"
+        echo -e "  ${BLUE}[1]${RESET} $(txt op_1)"
+        echo -e "  ${GREEN}[2]${RESET} $(txt op_2)"
+        echo -e "  ${CYAN}[3]${RESET} $(txt op_3)"
+        echo -e "  ${GOLD}[4]${RESET} $(txt op_4)"
+        echo -e "  ${PURPLE}[5]${RESET} $(txt op_5)"
+        echo -e "  ${RED}[0]${RESET} $(txt op_0)"
         echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
-        read -p " >> " opt
-        case $opt in
+        read -p " >> " op
+        case $op in
             1) core_menu ;;
             2) game_engine ;;
             3) backup_menu ;;
-            4) info_menu ;;
+            4) header; tail -n 10 $LOG_FILE; read -p "Enter..." ;;
             5) luma_monitor ;;
             0) exit 0 ;;
-            *) ;;
         esac
     done
 fi
