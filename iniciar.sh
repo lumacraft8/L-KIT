@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # =========================================
 # ██╗      ██╗   ██╗███╗   ███╗ █████╗  ██████╗██████╗  █████╗ ███████╗████████╗
 # ██║      ██║   ██║████╗ ████║██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔════╝╚══██╔══╝
@@ -7,7 +7,7 @@
 # ███████╗ ╚██████╔╝██║ ╚═╝ ██║██║  ██║╚██████╗██║  ██║██║  ██║██║        ██║   
 # ╚══════╝  ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝        ╚═╝   
 #
-#            • By SrxMateo •
+#            • By SrxMateo • (Fixed Version)
 # =========================================
 
 # --- CONFIGURACIÓN ---
@@ -34,13 +34,19 @@ CYAN="\033[1;36m"
 WHITE="\033[1;37m"
 RESET="\033[0m"
 
-# 1. Detección de Java
-JAVA_PATH=$(which java)
-if [ -z "$JAVA_PATH" ]; then
+# 1. Detección Inteligente de Java (Compatible con Termux y Linux Mint)
+if command -v java >/dev/null 2>&1; then
+    JAVA_PATH=$(command -v java)
+elif [ -f "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java" ]; then
     JAVA_PATH="/usr/lib/jvm/temurin-21-jdk-amd64/bin/java"
+elif [ -f "$PREFIX/bin/java" ]; then
+    JAVA_PATH="$PREFIX/bin/java" # Ruta típica de Termux
+else
+    echo -e "${RED}❌ ERROR: No se encontró Java.${RESET}"
+    exit 1
 fi
 
-# 2. Verificación de EULA y Archivo
+# 2. Verificación de Archivos
 if [ ! -f "$SERVER_JAR" ]; then
     echo -e "${RED}❌ Archivo $SERVER_JAR no encontrado.${RESET}"
     exit 1
@@ -57,29 +63,20 @@ while true; do
     echo " ██║      ██║   ██║██║╚██╔╝██║██╔══██║██║     ██╔══██╗██╔══██║██╔══╝     ██║   "
     echo " ███████╗ ╚██████╔╝██║ ╚═╝ ██║██║  ██║╚██████╗██║  ██║██║  ██║██║        ██║   "
     echo " ╚══════╝  ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝        ╚═╝   "
-    echo -e "            ${WHITE}• By SrxMateo •${RESET}"
+    echo -e "             ${WHITE}• By SrxMateo •${RESET}"
     echo ""
     echo -e "      ${GREEN}🚀 INICIANDO LUMACRAFT 🚀${RESET}"
-    echo -e "      ${WHITE}Sesión:${RESET} ${YELLOW}$SCREEN_NAME${RESET} | ${WHITE}RAM:${RESET} ${YELLOW}$MEM_MAX${RESET}"
+    echo -e "      ${WHITE}Java:${RESET} ${YELLOW}$JAVA_PATH${RESET} | ${WHITE}RAM:${RESET} ${YELLOW}$MEM_MAX${RESET}"
     echo -e "${CYAN} ==========================================================================${RESET}"
     echo ""
-
-    # Limpieza de logs antiguos (más de 7 días)
-    mkdir -p logs
-    find logs/ -name "session_*.log" -mtime +7 -delete > /dev/null 2>&1
-
-    LOG_FILE="logs/session_$(date +%Y-%m-%d_%H-%M).log"
     
-    echo -e "${GREEN}🟢 Cargando el motor del servidor...${RESET}"
-    echo -e "${WHITE}📝 Registrando log en:${RESET} ${YELLOW}$LOG_FILE${RESET}"
-    echo ""
-
-    # Ejecución de Java
-    "$JAVA_PATH" -Xms$MEM_MIN -Xmx$MEM_MAX $JVM_OPTS -jar $SERVER_JAR nogui | tee -a "$LOG_FILE"
+    # ⚠️ CORRECCIÓN IMPORTANTE: Se quitó "| tee" para que puedas escribir comandos
+    "$JAVA_PATH" -Xms$MEM_MIN -Xmx$MEM_MAX $JVM_OPTS -jar "$SERVER_JAR" nogui
 
     echo -e "\n${RED}🛑 El servidor se ha detenido.${RESET}"
-    echo -e "${WHITE}⏳ Reinicio automático en:${RESET}"
+    echo -e "${WHITE}⏳ Reinicio automático en 5 seg... ${RED}(Ctrl+C para cancelar)${RESET}"
     
+    # Cuenta atrás con posibilidad de cancelación
     for i in 5 4 3 2 1; do
         echo -n -e "${YELLOW}$i... ${RESET}"
         sleep 1
