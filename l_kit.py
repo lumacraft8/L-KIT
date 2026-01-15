@@ -14,16 +14,16 @@ from rich.align import Align
 from rich.layout import Layout
 from rich.text import Text
 
-# --- [ CONFIGURACIÓN VISUAL ] ---
+# --- [ CONFIGURACIÓN VISUAL (TEMA CELESTE) ] ---
 console = Console()
 
-# Paleta de Colores L-KIT
-C_MAIN = "bold cyan"
-C_SEC = "bold magenta"
-C_OK = "bold green"
-C_WARN = "bold yellow"
-C_ERR = "bold red"
-C_TEXT = "white"
+# Nueva Paleta "Ice Blue"
+C_MAIN = "bold cyan"       # Celeste Brillante (Principal)
+C_SEC = "bold blue"        # Azul Oscuro (Secundario)
+C_OK = "bold green"        # Éxito
+C_WARN = "bold yellow"     # Advertencia
+C_ERR = "bold red"         # Error
+C_TEXT = "white"           # Texto general
 
 # --- [ CLASE CORE DEL SISTEMA ] ---
 class LKitSystem:
@@ -40,7 +40,8 @@ class LKitSystem:
         grid.add_row(f"[{C_SEC}] # ========================================== #[/]")
         grid.add_row(f"[{C_MAIN}] {icon}  {title.upper()}  {icon} [/]")
         grid.add_row(f"[{C_SEC}] # ========================================== #[/]")
-        console.print(Panel(grid, style=f"{C_MAIN} border"))
+        # --- CORRECCIÓN AQUÍ: Se eliminó el estilo inválido ---
+        console.print(Panel(grid, border_style="cyan"))
         print("")
 
     def print_logo(self):
@@ -52,26 +53,25 @@ class LKitSystem:
  ██║      ════╝██╔═██╗  ██║   ██║    
  ███████╗       ██║  ██╗██║   ██║    
  ╚══════╝       ╚═╝  ╚═╝╚═╝   ╚═╝    
-      THE ARCHITECT EDITION v3.1     
+      THE ARCHITECT EDITION v3.2     
         """
-        console.print(Align.center(f"[{C_SEC}]{logo}[/]"))
+        console.print(Align.center(f"[{C_MAIN}]{logo}[/]"))
         console.print(Align.center(f"[{C_TEXT}]Automatización de Networks & VPS - By SrxMateo & Sonic[/]\n"))
 
     def pause(self):
-        console.print(f"\n[{C_MAIN}]Press [ENTER] to continue...[/]")
+        console.print(f"\n[{C_SEC}]Presiona [ENTER] para continuar...[/]")
         input()
 
     def run_command(self, command, description):
-        """Ejecuta comandos con spinner estético"""
+        """Ejecuta comandos con spinner estético en azul"""
         with Progress(
-            SpinnerColumn("dots", style="magenta"),
+            SpinnerColumn("dots", style="cyan"),
             TextColumn("[bold blue]{task.description}"),
-            BarColumn(bar_width=None, style="cyan", complete_style="magenta"),
+            BarColumn(bar_width=None, style="blue", complete_style="cyan"),
             transient=True,
         ) as progress:
             task = progress.add_task(description, total=None)
             try:
-                # Simulamos un poco de tiempo para que se vea la animación si el comando es muy rápido
                 time.sleep(0.5)
                 subprocess.run(command, shell=True, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 console.print(f"[{C_OK}] ✔ EXITO:[/] {description}")
@@ -79,7 +79,7 @@ class LKitSystem:
                 console.print(f"[{C_ERR}] ✘ ERROR:[/] Falló: {description}")
 
     def success_box(self, msg):
-        console.print(Panel(Align.center(f"[{C_OK}]{msg}[/]"), border_style="green"))
+        console.print(Panel(Align.center(f"[{C_MAIN}]{msg}[/]"), border_style="green"))
 
 # --- [ MÓDULO 1: HERRAMIENTAS VPS ] ---
 def module_vps_tools(sys_core):
@@ -97,7 +97,7 @@ def module_vps_tools(sys_core):
         table.add_row("4", "📺 Screen", "Multitarea en terminal")
         table.add_row("5", "🔙 Volver", "")
         
-        console.print(Panel(table, title="[bold white]Selecciona instalación[/]", border_style="blue"))
+        console.print(Panel(table, title="[bold cyan]Selecciona instalación[/]", border_style="blue"))
         opt = IntPrompt.ask(f"[{C_WARN}]➜[/]", choices=["1", "2", "3", "4", "5"])
 
         if opt == 1:
@@ -143,7 +143,7 @@ def module_security(sys_core):
     table.add_row("4. 🚫 Fail2Ban", "Bloquear hackers (Anti-Bruteforce)")
     table.add_row("5. 🔙 Volver", "")
     
-    console.print(Panel(table, border_style="red"))
+    console.print(Panel(table, border_style="cyan"))
     opt = IntPrompt.ask(f"[{C_WARN}]Elige una opción[/]", choices=["1", "2", "3", "4", "5"])
     
     if opt == 1:
@@ -152,7 +152,7 @@ def module_security(sys_core):
     elif opt == 2:
         sys_core.run_command("apt install btop -y", "Instalando Monitor Btop")
     elif opt == 3:
-        with console.status("[bold red]Eliminando basura del sistema..."):
+        with console.status("[bold blue]Eliminando basura del sistema..."):
             sys_core.run_command("journalctl --vacuum-time=1d", "Purgando Logs antiguos")
             sys_core.run_command("apt autoremove -y", "Removiendo dependencias huerfanas")
             sys_core.run_command("apt clean", "Limpiando caché de apt")
@@ -177,18 +177,14 @@ def module_design(sys_core):
     if opt == 1:
         console.print(f"[{C_WARN}]⚠️  Nota: Esto requiere reiniciar la sesión al finalizar.[/]")
         sys_core.run_command("apt install zsh git fonts-powerline -y", "Instalando Zsh Base")
-        # OhMyZsh script
         console.print(f"[{C_MAIN}]Ejecutando instalador oficial de OhMyZsh...[/]")
         os.system('sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"')
     
     elif opt == 2:
         txt = Prompt.ask(f"[{C_SEC}]Escribe el nombre de tu Network para el banner[/]")
         sys_core.run_command("apt install update-motd -y", "Instalando gestor MOTD")
-        
-        # Crear banner simple
         with open("/etc/motd", "w") as f:
             f.write(f"\n Welcome to {txt} Network \n Powered by L-KIT \n")
-            
         sys_core.success_box("Mensaje MOTD Actualizado")
         sys_core.pause()
 
@@ -221,15 +217,13 @@ def module_server_creator(sys_core):
     if os.path.exists(path):
         console.print(f"[{C_ERR}]Error: La carpeta ya existe.[/]"); sys_core.pause(); return
 
-    console.print(Panel("1. Paper (Survival)\n2. Velocity (Proxy)\n3. Purpur (Custom)", title="Software", style="magenta"))
+    console.print(Panel("1. Paper (Survival)\n2. Velocity (Proxy)\n3. Purpur (Custom)", title="Software", border_style="blue"))
     soft = IntPrompt.ask("Selecciona", choices=["1", "2", "3"])
     
-    # Lógica simplificada para Paper (Expandible)
     if soft == 1:
-        with console.status("Consultando API de PaperMC..."):
+        with console.status("[bold cyan]Consultando API de PaperMC..."):
             vers = api.get_paper_versions()
         
-        # Mostrar últimas 5 versiones
         console.print(f"[{C_OK}]Versiones Recientes: {', '.join(vers[-5:])}[/]")
         ver = Prompt.ask("Escribe la versión exacta", choices=vers)
         
@@ -240,7 +234,6 @@ def module_server_creator(sys_core):
         console.print(f"[{C_MAIN}]Descargando núcleo en {path}...[/]")
         api.download(url, f"{path}/server.jar")
         
-        # Generar Start.sh
         ram = IntPrompt.ask("GB de RAM")
         flags = "-XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1"
         
@@ -273,9 +266,8 @@ def module_gemini(sys_core):
         sys_core.success_box("Node.js Instalado Correctamente")
     
     elif opt == 2:
-        # Aquí asumimos que existe un paquete, o instalamos uno genérico
         sys_core.run_command("npm install -g gemini-chat-cli", "Instalando paquete global Gemini")
-        console.print(f"[{C_OK}]Ahora puedes usar el comando 'gemini-chat' (si el paquete es válido).[/]")
+        console.print(f"[{C_OK}]Ahora puedes usar el comando 'gemini-chat'[/]")
     
     if opt != 3: sys_core.pause()
 
@@ -286,7 +278,6 @@ def main():
     while True:
         sys_core.print_logo()
         
-        # Grid Menu Layout
         menu = Table.grid(expand=True, padding=(0, 2))
         menu.add_column(justify="right", style=C_SEC)
         menu.add_column(justify="left", style="bold white")
@@ -299,7 +290,7 @@ def main():
         menu.add_row("6.", "ℹ️  Información")
         menu.add_row("7.", "❌  Salir")
         
-        console.print(Panel(Align.center(menu), title="[bold green]MAIN MENU[/]", border_style="blue", padding=(1, 5)))
+        console.print(Panel(Align.center(menu), title="[bold cyan]MAIN MENU[/]", border_style="blue", padding=(1, 5)))
         
         opt = IntPrompt.ask(f"[{C_WARN}]Selecciona una opción[/]", choices=["1", "2", "3", "4", "5", "6", "7"])
         
@@ -310,7 +301,7 @@ def main():
         elif opt == 5: module_gemini(sys_core)
         elif opt == 6: 
             sys_core.print_header("Información", "ℹ️")
-            console.print(Panel("Desarrollado por SrxMateo & SonicTheGames\nVersión: 3.1 Stable\nLicencia: MIT", title="Credits"))
+            console.print(Panel("Desarrollado por SrxMateo & SonicTheGames\nVersión: 3.2 Stable\nLicencia: MIT", title="Credits", border_style="cyan"))
             sys_core.pause()
         elif opt == 7:
             console.print(f"\n[{C_ERR}]Apagando L-KIT... ¡Hasta pronto Arquitecto![/]")
