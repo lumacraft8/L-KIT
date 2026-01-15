@@ -1,34 +1,26 @@
-<div align="center">
+# 🏛️ L-KIT: The Architect Edition v3.0
 
-# 💎 L-KIT: The Architect Edition
-### El Sistema Operativo Definitivo para Servidores de Minecraft
+> **Automated Minecraft Network Infrastructure Manager** > *Created by SrxMateo & SonicTheGames*
 
-[![Version](https://img.shields.io/badge/Release-v2.0-gold?style=for-the-badge&logo=appveyor)](https://github.com/lumacraft8/L-KIT/releases)
-[![Language](https://img.shields.io/badge/Lang-Bash-blue?style=for-the-badge&logo=gnu-bash)](https://github.com/lumacraft8/L-KIT)
-[![Platform](https://img.shields.io/badge/OS-Ubuntu%20%7C%20Debian-orange?style=for-the-badge&logo=linux)](https://github.com/lumacraft8/L-KIT)
-[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](https://opensource.org/licenses/MIT)
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python)
+![Platform](https://img.shields.io/badge/Platform-Linux-orange?style=for-the-badge&logo=linux)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-<p align="center">
-  <a href="#-instalación-rápida">Instalación</a> •
-  <a href="#-características">Características</a> •
-  <a href="#-lumamonitor">LumaMonitor</a> •
-  <a href="#-galería">Capturas</a>
-</p>
+L-KIT es una herramienta profesional de CLI (Interfaz de Línea de Comandos) diseñada para administradores de sistemas y creadores de Networks de Minecraft. Utiliza una interfaz gráfica moderna en terminal y se conecta directamente a las APIs oficiales de PaperMC, Velocity y Purpur para garantizar descargas seguras y optimizadas.
 
-</div>
+## ✨ Características Principales
 
----
+* **🎨 Interfaz UI/UX Cyberpunk:** Desarrollada con la librería `Rich` para una experiencia visual superior.
+* **🚀 API Integration:** Descarga versiones exactas de Paper, Purpur y Velocity consultando sus APIs en tiempo real.
+* **⚡ Aikar's Flags Auto-Inject:** Detecta si instalas un Proxy o un Survival e inyecta las banderas de optimización Java automáticamente.
+* **🛠️ VPS Tools:** Instalación rápida de UFW, Java 17/21, MariaDB y Screen.
 
-## 📖 ¿Qué es L-KIT?
-**L-KIT** transforma una VPS vacía en una Network profesional en segundos. No es solo un script de instalación; es una suite completa de gestión que incluye **diagnóstico de salud**, **backups en la nube**, **optimización de red (BBR)** y un **panel de control visual**.
+## 📥 Instalación Rápida
 
-> *Diseñado para administradores que buscan rendimiento extremo sin complicaciones.*
-
----
-
-## 🚀 Instalación Rápida
-
-Copia y pega este comando en tu terminal. El script se instalará globalmente y podrás ejecutarlo siempre escribiendo `l-kit`.
+Copia y pega este comando en tu terminal (VPS):
 
 ```bash
-curl -sSL [https://raw.githubusercontent.com/lumacraft8/L-KIT/main/kit.sh](https://raw.githubusercontent.com/lumacraft8/L-KIT/main/kit.sh) -o l-kit && chmod +x l-kit && sudo mv l-kit /usr/local/bin/ && l-kit
+git clone [https://github.com/TU_USUARIO/L-KIT.git](https://github.com/TU_USUARIO/L-KIT.git)
+cd L-KIT
+chmod +x install.sh
+./install.sh
