@@ -15,6 +15,8 @@ L-KIT es una herramienta profesional de CLI (Interfaz de Línea de Comandos) dis
 * **⚡ Aikar's Flags Auto-Inject:** Detecta si instalas un Proxy o un Survival e inyecta las banderas de optimización Java automáticamente.
 * **🛠️ VPS Tools:** Instalación rápida de UFW, Java 17/21, MariaDB y Screen.
 
+Developed with ❤️ by SrxMateo & SonicTheGames
+
 ## 📥 Instalación Rápida
 
 Copia y pega este comando en tu terminal (VPS):
